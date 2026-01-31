@@ -1,1297 +1,1112 @@
 <template>
-  <main>
-    <!-- Hero Section - Art Deco Luxury -->
-    <section id="home" class="hero-section">
-      <div class="hero-ornament top-left"></div>
-      <div class="hero-ornament top-right"></div>
-      <div class="hero-ornament bottom-left"></div>
-      <div class="hero-ornament bottom-right"></div>
-      
-      <div class="container mx-auto px-6 md:px-12">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center min-h-screen py-32">
-          <!-- Content Column -->
-          <div class="lg:col-span-6 space-y-8 z-10">
-            <!-- Decorative Line -->
-            <div class="flex items-center gap-4">
-              <div class="w-16 h-px bg-gradient-to-r from-transparent via-gold to-gold"></div>
-              <span class="text-xs tracking-[0.3em] text-bronze uppercase font-montserrat font-medium">Since 2010</span>
+  <main class="modern-home">
+    <!-- Hero Section - Visual First -->
+    <section class="hero-section">
+      <div class="hero-slideshow">
+        <!-- Image Slides -->
+        <transition-group name="slide-fade">
+          <div 
+            v-for="(image, index) in heroImages" 
+            :key="image"
+            v-show="currentSlide === index"
+            class="hero-slide"
+          >
+            <img 
+              :src="image" 
+              :alt="`Showcase ${index + 1}`" 
+              class="hero-image"
+              @error="handleHeroImageError"
+            />
+            <div class="hero-overlay"></div>
+          </div>
+        </transition-group>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+          <div class="container">
+            <h1 class="hero-title">Crafted Excellence</h1>
+            <p class="hero-motto">Where Vision Meets Reality</p>
+            
+            <div class="hero-actions">
+              <router-link to="/portfolio" class="modern-btn modern-btn-primary">
+                <span>View Portfolio</span>
+                <i class="pi pi-arrow-right"></i>
+              </router-link>
+              <router-link to="/contact" class="modern-btn modern-btn-outline">
+                <span>Get Quote</span>
+              </router-link>
             </div>
-            
-            <!-- Main Heading -->
-            <h1 class="hero-title">
-              <span class="title-line">BESPOKE</span>
-              <span class="title-line highlight">CRAFTSMANSHIP</span>
-              <span class="title-line">FOR YOUR HOME</span>
-            </h1>
-            
-            <!-- Subtitle -->
-            <p class="hero-subtitle">
-              Where timeless elegance meets modern functionality. Every piece tells a story of meticulous attention to detail and uncompromising quality.
+          </div>
+        </div>
+
+        <!-- Slide Navigation -->
+        <div class="slide-nav">
+          <button 
+            v-for="(_, index) in heroImages" 
+            :key="index"
+            @click="currentSlide = index"
+            :class="['nav-dot', { active: currentSlide === index }]"
+            :aria-label="`Go to slide ${index + 1}`"
+          ></button>
+        </div>
+
+        <!-- Slide Controls -->
+        <button @click="prevSlide" class="slide-control prev" aria-label="Previous slide">
+          <i class="pi pi-chevron-left"></i>
+        </button>
+        <button @click="nextSlide" class="slide-control next" aria-label="Next slide">
+          <i class="pi pi-chevron-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Services Section - Visual Grid -->
+    <section class="services-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">What We Do</h2>
+          <p class="section-subtitle">Expert craftsmanship for your space</p>
+        </div>
+
+        <div class="services-grid">
+          <div 
+            v-for="service in services" 
+            :key="service.title"
+            class="service-card"
+          >
+            <div class="service-image-wrapper">
+              <img :src="service.image" :alt="service.title" class="service-image" />
+              <div class="service-overlay">
+                <i :class="service.icon"></i>
+              </div>
+            </div>
+            <div class="service-info">
+              <h3 class="service-title">{{ service.title }}</h3>
+              <p class="service-description">{{ service.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Portfolio Gallery - Dynamic Images -->
+    <section class="gallery-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Our Portfolio</h2>
+          <p class="section-subtitle">Explore our completed projects showcasing quality craftsmanship</p>
+        </div>
+
+        <div class="gallery-grid">
+          <div 
+            v-for="(image, index) in galleryImages" 
+            :key="index"
+            class="gallery-item"
+            @click="openLightbox(index)"
+          >
+            <img 
+              :src="image" 
+              :alt="`Project ${index + 1}`" 
+              class="gallery-image"
+              @error="handleImageError"
+            />
+            <div class="gallery-overlay">
+              <i class="pi pi-search-plus"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-actions">
+          <router-link to="/portfolio" class="modern-btn modern-btn-outline">
+            <span>View All Projects</span>
+            <i class="pi pi-images"></i>
+          </router-link>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section - Minimal -->
+    <section class="about-section">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <h2 class="about-title">Fifteen Years of Excellence</h2>
+            <p class="about-description">
+              We transform spaces through exceptional craftsmanship and innovative design. 
+              Every project reflects our commitment to quality and attention to detail.
             </p>
-
-            <!-- CTA Buttons -->
-            <div class="flex flex-wrap gap-6 pt-4">
-              <Button 
-                @click="navigateToSection('services')" 
-                label="Our Services" 
-                icon="pi pi-compass" 
-                class="hero-btn-primary"
-              />
-              <Button 
-                @click="navigateToSection('portfolio')" 
-                label="View Gallery" 
-                icon="pi pi-arrow-right"
-                iconPos="right"
-                class="hero-btn-secondary"
-              />
-            </div>
-
-            <!-- Stats -->
-            <div class="flex gap-12 pt-8 border-t border-bronze/20">
-              <div class="stat-item">
-                <div class="stat-number">500+</div>
-                <div class="stat-label">Projects</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number">15+</div>
-                <div class="stat-label">Years</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number">98%</div>
-                <div class="stat-label">Satisfaction</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Image Column -->
-          <div class="lg:col-span-6 relative">
-            <div class="image-container">
-              <!-- Geometric Frame -->
-              <div class="geo-frame frame-tl"></div>
-              <div class="geo-frame frame-tr"></div>
-              <div class="geo-frame frame-bl"></div>
-              <div class="geo-frame frame-br"></div>
-              
-              <!-- Main Image -->
-              <img 
-                src="/Home01.svg"
-                alt="H Cabinet & Furniture Showcase"
-                class="hero-image"
-              />
-              
-              <!-- Decorative Elements -->
-              <div class="accent-square square-1"></div>
-              <div class="accent-square square-2"></div>
-              <div class="accent-line line-1"></div>
-              <div class="accent-line line-2"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Background Pattern -->
-      <div class="hero-pattern"></div>
-    </section>
-
-    <!-- Services Section - REDESIGNED -->
-    <section id="services" class="services-section">
-      <div class="container mx-auto px-6 md:px-12">
-        <!-- Section Header -->
-        <div class="section-header">
-          <div class="header-ornament">
-            <div class="ornament-line"></div>
-            <div class="ornament-diamond"></div>
-            <div class="ornament-line"></div>
-          </div>
-          <h2 class="section-title">WHAT WE DO</h2>
-          <p class="section-subtitle">Expert interior decoration services to transform your space</p>
-        </div>
-        
-        <!-- Services Grid with Images -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <!-- Service Card 1 - Custom Cabinetry -->
-          <div class="service-card-redesign">
-            <!-- Image Container -->
-            <div class="service-image-container">
-              <div class="image-frame frame-tl"></div>
-              <div class="image-frame frame-br"></div>
-              <img 
-                src="/so.svg"
-                alt="Custom Cabinetry"
-                class="service-image"
-              />
-              <div class="image-overlay">
-                <i class="pi pi-home overlay-icon"></i>
-              </div>
-            </div>
-            
-            <!-- Content -->
-            <div class="service-content">
-              <h3 class="service-title">Custom Cabinetry</h3>
-              <p class="service-description">
-                Handcrafted cabinets tailored to your kitchen, bathroom, or storage needs with premium materials.
-              </p>
-              <ul class="service-list">
-                <li><span class="list-dot"></span>Kitchen Cabinets</li>
-                <li><span class="list-dot"></span>Bathroom Vanities</li>
-                <li><span class="list-dot"></span>Built-in Storage</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Service Card 2 - Furniture Design -->
-          <div class="service-card-redesign">
-            <!-- Image Container -->
-            <div class="service-image-container">
-              <div class="image-frame frame-tl"></div>
-              <div class="image-frame frame-br"></div>
-              <img 
-                src="/so1.svg"
-                alt="Furniture Design"
-                class="service-image"
-              />
-              <div class="image-overlay">
-                <i class="pi pi-building overlay-icon"></i>
-              </div>
-            </div>
-            
-            <!-- Content -->
-            <div class="service-content">
-              <h3 class="service-title">Furniture Design</h3>
-              <p class="service-description">
-                Bespoke furniture pieces that blend style and functionality, crafted to complement your interior.
-              </p>
-              <ul class="service-list">
-                <li><span class="list-dot"></span>Living Room Sets</li>
-                <li><span class="list-dot"></span>Bedroom Furniture</li>
-                <li><span class="list-dot"></span>Office Solutions</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Service Card 3 - Interior Consultation -->
-          <div class="service-card-redesign">
-            <!-- Image Container -->
-            <div class="service-image-container">
-              <div class="image-frame frame-tl"></div>
-              <div class="image-frame frame-br"></div>
-              <img 
-                src="/so2.svg"
-                alt="Interior Consultation"
-                class="service-image"
-              />
-              <div class="image-overlay">
-                <i class="pi pi-pencil overlay-icon"></i>
-              </div>
-            </div>
-            
-            <!-- Content -->
-            <div class="service-content">
-              <h3 class="service-title">Interior Consultation</h3>
-              <p class="service-description">
-                Professional design guidance to create cohesive, beautiful spaces that reflect your unique style.
-              </p>
-              <ul class="service-list">
-                <li><span class="list-dot"></span>Space Planning</li>
-                <li><span class="list-dot"></span>Material Selection</li>
-                <li><span class="list-dot"></span>3D Visualization</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio-section">
-      <div class="container mx-auto px-6 md:px-12">
-        <!-- Section Header -->
-        <div class="section-header">
-          <div class="header-ornament">
-            <div class="ornament-line"></div>
-            <div class="ornament-diamond"></div>
-            <div class="ornament-line"></div>
-          </div>
-          <h2 class="section-title">OUR RECENT WORK</h2>
-          <p class="section-subtitle">A showcase of beautifully designed interiors</p>
-        </div>
-        
-        <!-- Portfolio Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <ProjectCard v-for="project in projects.slice(0, 3)" :key="project.title" v-bind="project" />
-        </div>
-        
-        <!-- View Gallery Button -->
-        <div class="text-center">
-          <router-link to="/portfolio">
-            <Button 
-              label="See Complete Gallery" 
-              icon="pi pi-images"
-              iconPos="right"
-              class="btn-gold-outline"
-            />
-          </router-link>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about-section">
-      <div class="container mx-auto px-6 md:px-12">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <!-- Content -->
-          <div class="space-y-8">
-            <div class="header-ornament">
-              <div class="ornament-line"></div>
-              <div class="ornament-diamond"></div>
-            </div>
-            
-            <h2 class="about-title">MASTERS OF<br/>FINE INTERIORS</h2>
-            
-            <div class="space-y-6 text-lg text-warm-gray leading-relaxed">
-              <p>
-                For over fifteen years, H Cabinet & Furniture has been transforming homes with exceptional interior decoration and custom furniture design.
-              </p>
-              <p>
-                Our team combines traditional craftsmanship with contemporary innovation, ensuring each project reflects your unique vision while standing the test of time.
-              </p>
-            </div>
-
-            <div class="flex gap-6 pt-4">
-              <router-link to="/about">
-                <Button 
-                  label="Our Story" 
-                  icon="pi pi-book"
-                  class="btn-dark"
-                />
-              </router-link>
-              <router-link to="/contact">
-                <Button 
-                  label="Get Free Consultation" 
-                  icon="pi pi-calendar"
-                  class="btn-gold-outline"
-                />
+            <div class="about-actions">
+              <router-link to="/about" class="modern-btn modern-btn-secondary">
+                <i class="pi pi-info-circle"></i>
+                <span>Our Story</span>
               </router-link>
             </div>
           </div>
-
-          <!-- Visual Element -->
-          <div class="about-visual">
-            <div class="visual-frame">
-              <div class="frame-border border-tl"></div>
-              <div class="frame-border border-tr"></div>
-              <div class="frame-border border-bl"></div>
-              <div class="frame-border border-br"></div>
-              
-              <div class="visual-content">
-                <i class="pi pi-home"></i>
-                <div class="visual-text">CRAFTED<br/>WITH CARE</div>
-              </div>
+          <div class="about-stats">
+            <div class="stat-item">
+              <div class="stat-number">500+</div>
+              <div class="stat-label">Projects</div>
             </div>
-            
-            <div class="visual-accent accent-1"></div>
-            <div class="visual-accent accent-2"></div>
+            <div class="stat-item">
+              <div class="stat-number">15+</div>
+              <div class="stat-label">Years</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">98%</div>
+              <div class="stat-label">Satisfaction</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-      <div class="contact-overlay"></div>
-      
-      <div class="container mx-auto px-6 md:px-12 text-center relative z-10">
-        <div class="max-w-4xl mx-auto space-y-8">
-          <div class="header-ornament justify-center">
-            <div class="ornament-line"></div>
-            <div class="ornament-diamond light"></div>
-            <div class="ornament-line"></div>
+    <!-- Contact CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Start Your Project?</h2>
+          <p class="cta-description">Let's bring your vision to life with exceptional craftsmanship</p>
+          <div class="cta-actions">
+            <router-link to="/contact" class="modern-btn modern-btn-primary modern-btn-large">
+              <span>Get Free Consultation</span>
+              <i class="pi pi-arrow-right"></i>
+            </router-link>
           </div>
           
-          <h2 class="contact-title">
-            READY TO TRANSFORM<br/>
-            YOUR SPACE?
-          </h2>
-          
-          <p class="contact-subtitle">
-            Whether you're planning a complete home makeover or need custom furniture pieces, our expert team is here to bring your vision to life with exceptional craftsmanship.
-          </p>
-
-          <router-link to="/contact">
-            <Button 
-              label="Start Your Project Today" 
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              class="btn-light-premium"
-            />
-          </router-link>
-
-          <!-- Contact Info -->
-          <div class="flex flex-wrap justify-center gap-12 pt-12 border-t border-white/20">
-            <div class="contact-info-item">
-              <i class="pi pi-phone mb-3"></i>
-              <div class="info-label">Call Us</div>
-              <div class="info-value">+601119706733</div>
+          <div class="contact-info">
+            <div class="info-item">
+              <i class="pi pi-phone"></i>
+              <span>+601119706733</span>
             </div>
-            <div class="contact-info-item">
-              <i class="pi pi-envelope mb-3"></i>
-              <div class="info-label">Email</div>
-              <div class="info-value">hcabinetfurnitures@gmail.com</div>
-            </div>
-            <div class="contact-info-item">
-              <i class="pi pi-map-marker mb-3"></i>
-              <div class="info-label">Visit Showroom</div>
-              <div class="info-value">By Appointment</div>
+            <div class="info-item">
+              <i class="pi pi-envelope"></i>
+              <span>hcabinetfurnitures@gmail.com</span>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="contact-pattern"></div>
     </section>
+
+    <!-- Lightbox Modal -->
+    <Teleport to="body">
+      <div v-if="lightboxOpen" class="lightbox" @click="closeLightbox">
+        <button class="lightbox-close" @click="closeLightbox" aria-label="Close lightbox">
+          <i class="pi pi-times"></i>
+        </button>
+        <img :src="galleryImages[lightboxIndex]" :alt="`Project ${lightboxIndex + 1}`" class="lightbox-image" @click.stop />
+        <button @click.stop="prevImage" class="lightbox-nav prev" aria-label="Previous image">
+          <i class="pi pi-chevron-left"></i>
+        </button>
+        <button @click.stop="nextImage" class="lightbox-nav next" aria-label="Next image">
+          <i class="pi pi-chevron-right"></i>
+        </button>
+      </div>
+    </Teleport>
   </main>
 </template>
 
 <script setup>
-import ProjectCard from '@/components/portfolio/ProjectCard.vue';
-import { projects } from '@/data/projects';
+import { ref, onMounted, onUnmounted } from 'vue';
 
-const navigateToSection = (id) => {
-  const element = document.getElementById(id);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+// Hero Slideshow - Using working images only
+const heroImages = ref([
+  '/wp1.svg',
+  '/wp2.svg',
+  '/wp3.svg',
+  '/wp4.svg',
+  '/wp6.svg',
+  '/wp7.svg',
+  '/wp8.svg',
+  '/wp9.svg',
+  '/wp10.svg',
+  '/wp14.svg'  // Adding wp14 back to hero
+]);
+
+const currentSlide = ref(0);
+let slideInterval = null;
+
+const nextSlide = () => {
+  currentSlide.value = (currentSlide.value + 1) % heroImages.value.length;
+};
+
+const prevSlide = () => {
+  currentSlide.value = currentSlide.value === 0 
+    ? heroImages.value.length - 1 
+    : currentSlide.value - 1;
+};
+
+const startSlideshow = () => {
+  slideInterval = setInterval(nextSlide, 7000); // 7 seconds per slide for better viewing
+};
+
+const stopSlideshow = () => {
+  if (slideInterval) {
+    clearInterval(slideInterval);
   }
 };
+
+// Services
+const services = ref([
+  {
+    title: 'Custom Cabinetry',
+    description: 'Handcrafted cabinets for every space',
+    image: '/so.svg',
+    icon: 'pi pi-th-large'
+  },
+  {
+    title: 'Furniture Design',
+    description: 'Bespoke pieces for your home',
+    image: '/so1.svg',
+    icon: 'pi pi-building'
+  },
+  {
+    title: 'Interior Solutions',
+    description: 'Complete design consultation',
+    image: '/so2.svg',
+    icon: 'pi pi-palette'
+  }
+]);
+
+// Gallery - Using all remaining working images (11 images)
+const galleryImages = ref([]);
+
+const loadGalleryImages = () => {
+  // Use wp11, wp12, wp13, wp15-wp21 (excluding wp5 and wp14 which are in hero)
+  const galleryImageNumbers = [11, 12, 13, 15, 16, 17, 18, 19, 20, 21];
+  
+  galleryImageNumbers.forEach(num => {
+    galleryImages.value.push(`/wp${num}.svg`);
+  });
+};
+
+// Lightbox
+const lightboxOpen = ref(false);
+const lightboxIndex = ref(0);
+
+const openLightbox = (index) => {
+  lightboxIndex.value = index;
+  lightboxOpen.value = true;
+  document.body.style.overflow = 'hidden';
+};
+
+const closeLightbox = () => {
+  lightboxOpen.value = false;
+  document.body.style.overflow = '';
+};
+
+const nextImage = () => {
+  lightboxIndex.value = (lightboxIndex.value + 1) % galleryImages.value.length;
+};
+
+const prevImage = () => {
+  lightboxIndex.value = lightboxIndex.value === 0 
+    ? galleryImages.value.length - 1 
+    : lightboxIndex.value - 1;
+};
+
+// Handle image loading errors
+const handleImageError = (event) => {
+  console.warn('Failed to load gallery image:', event.target.src);
+  // Hide the parent gallery item if image fails
+  const galleryItem = event.target.closest('.gallery-item');
+  if (galleryItem) {
+    galleryItem.style.display = 'none';
+  }
+};
+
+// Handle hero image errors
+const handleHeroImageError = (event) => {
+  console.warn('Failed to load hero image:', event.target.src);
+  // Skip to next slide if hero image fails
+  nextSlide();
+};
+
+// Keyboard navigation for lightbox
+const handleKeydown = (e) => {
+  if (!lightboxOpen.value) return;
+  
+  if (e.key === 'Escape') {
+    closeLightbox();
+  } else if (e.key === 'ArrowLeft') {
+    prevImage();
+  } else if (e.key === 'ArrowRight') {
+    nextImage();
+  }
+};
+
+// Lifecycle
+onMounted(() => {
+  loadGalleryImages();
+  startSlideshow();
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onUnmounted(() => {
+  stopSlideshow();
+  document.body.style.overflow = '';
+  window.removeEventListener('keydown', handleKeydown);
+});
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
-:root {
-  --gold: #C9A875;
-  --bronze: #8B7355;
-  --dark: #2C2416;
-  --warm-gray: #5C4D3D;
-  --cream: #FAF8F5;
-  --white: #FFFFFF;
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+  scroll-behavior: smooth;
+}
+
+.modern-home {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 /* ============================================
-   HERO SECTION - Art Deco Elegance
+   HERO SECTION - SLIDESHOW
    ============================================ */
 
 .hero-section {
   position: relative;
-  background: linear-gradient(135deg, 
-    #FAF8F5 0%,
-    #F5F1EB 50%,
-    #EFE9E1 100%
-  );
+  height: 100vh;
+  min-height: 700px;
   overflow: hidden;
 }
 
-.hero-ornament {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  border: 2px solid var(--gold);
-  opacity: 0.2;
-  z-index: 1;
+.hero-slideshow {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-.hero-ornament.top-left {
-  top: 100px;
-  left: 40px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.hero-ornament.top-right {
-  top: 100px;
-  right: 40px;
-  border-left: none;
-  border-bottom: none;
-}
-
-.hero-ornament.bottom-left {
-  bottom: 100px;
-  left: 40px;
-  border-right: none;
-  border-top: none;
-}
-
-.hero-ornament.bottom-right {
-  bottom: 100px;
-  right: 40px;
-  border-left: none;
-  border-top: none;
-}
-
-.hero-pattern {
+.hero-slide {
   position: absolute;
   inset: 0;
-  background-image: 
-    repeating-linear-gradient(90deg, 
-      transparent, 
-      transparent 49px, 
-      rgba(139, 115, 85, 0.02) 49px, 
-      rgba(139, 115, 85, 0.02) 50px
-    ),
-    repeating-linear-gradient(0deg, 
-      transparent, 
-      transparent 49px, 
-      rgba(139, 115, 85, 0.02) 49px, 
-      rgba(139, 115, 85, 0.02) 50px
-    );
-  pointer-events: none;
-}
-
-/* Hero Typography */
-.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 700;
-  font-size: clamp(3rem, 8vw, 5.5rem);
-  line-height: 1.1;
-  letter-spacing: 0.02em;
-  color: var(--dark);
-  margin: 0;
-}
-
-.title-line {
-  display: block;
-  animation: fadeInUp 0.8s ease-out backwards;
-}
-
-.title-line:nth-child(1) { animation-delay: 0.2s; }
-.title-line:nth-child(2) { animation-delay: 0.4s; }
-.title-line:nth-child(3) { animation-delay: 0.6s; }
-
-.title-line.highlight {
-  color: var(--gold);
-  font-style: italic;
-  position: relative;
-  padding: 0 0.25em;
-}
-
-.title-line.highlight::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0.15em;
   width: 100%;
-  height: 0.15em;
-  background: var(--bronze);
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: scaleIn 0.8s ease-out 1s forwards;
-}
-
-.hero-subtitle {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: var(--warm-gray);
-  max-width: 500px;
-  animation: fadeInUp 0.8s ease-out 0.8s backwards;
-}
-
-/* Stats */
-.stat-item {
-  animation: fadeInUp 0.8s ease-out 1s backwards;
-}
-
-.stat-number {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--gold);
-  line-height: 1;
-  margin-bottom: 0.25rem;
-}
-
-.stat-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--bronze);
-  font-weight: 600;
-}
-
-/* Image Container */
-.image-container {
-  position: relative;
-  padding: 2rem;
-  animation: fadeIn 1.2s ease-out 0.4s backwards;
-}
-
-.geo-frame {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border: 3px solid var(--gold);
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  z-index: 2;
-}
-
-.frame-tl {
-  top: 0;
-  left: 0;
-  border-right: none;
-  border-bottom: none;
-}
-
-.frame-tr {
-  top: 0;
-  right: 0;
-  border-left: none;
-  border-bottom: none;
-}
-
-.frame-bl {
-  bottom: 0;
-  left: 0;
-  border-right: none;
-  border-top: none;
-}
-
-.frame-br {
-  bottom: 0;
-  right: 0;
-  border-left: none;
-  border-top: none;
-}
-
-.image-container:hover .geo-frame {
-  width: 80px;
-  height: 80px;
+  height: 100%;
 }
 
 .hero-image {
-  position: relative;
   width: 100%;
-  height: auto;
-  border-radius: 4px;
-  box-shadow: 
-    0 20px 60px rgba(44, 36, 22, 0.15),
-    0 8px 24px rgba(139, 115, 85, 0.1);
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  z-index: 1;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
-.image-container:hover .hero-image {
-  transform: scale(1.02);
-}
-
-.accent-square {
+.hero-overlay {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--bronze);
-  opacity: 0.3;
-  z-index: 0;
-}
-
-.square-1 {
-  top: -20px;
-  right: -20px;
-  animation: float 6s ease-in-out infinite;
-}
-
-.square-2 {
-  bottom: -20px;
-  left: -20px;
-  animation: float 6s ease-in-out infinite 3s;
-}
-
-.accent-line {
-  position: absolute;
-  background: var(--gold);
-  opacity: 0.4;
-}
-
-.line-1 {
-  width: 2px;
-  height: 100px;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.line-2 {
-  width: 100px;
-  height: 2px;
-  bottom: -40px;
-  right: 50%;
-  transform: translateX(50%);
-}
-
-/* ============================================
-   BUTTONS
-   ============================================ */
-
-.hero-btn-primary {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 0.875rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  
-  background: var(--dark) !important;
-  color: var(--cream) !important;
-  border: 2px solid var(--dark) !important;
-  border-radius: 0 !important;
-  
-  padding: 1rem 2.5rem !important;
-  
-  box-shadow: 0 4px 16px rgba(44, 36, 22, 0.2);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  animation: fadeInUp 0.8s ease-out 1.2s backwards;
-}
-
-.hero-btn-primary:hover {
-  background: var(--bronze) !important;
-  border-color: var(--bronze) !important;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(139, 115, 85, 0.3);
-}
-
-.hero-btn-secondary {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 0.875rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  
-  background: transparent !important;
-  color: var(--dark) !important;
-  border: 2px solid var(--dark) !important;
-  border-radius: 0 !important;
-  
-  padding: 1rem 2.5rem !important;
-  
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  animation: fadeInUp 0.8s ease-out 1.4s backwards;
-}
-
-.hero-btn-secondary:hover {
-  background: var(--dark) !important;
-  color: var(--cream) !important;
-  transform: translateY(-3px);
-}
-
-.btn-gold-outline {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  
-  background: transparent !important;
-  color: var(--bronze) !important;
-  border: 2px solid var(--gold) !important;
-  border-radius: 0 !important;
-  
-  padding: 0.875rem 2rem !important;
-  
-  transition: all 0.4s ease;
-}
-
-.btn-gold-outline:hover {
-  background: var(--gold) !important;
-  color: var(--dark) !important;
-  border-color: var(--gold) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(201, 168, 117, 0.3);
-}
-
-.btn-dark {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-  
-  background: var(--dark) !important;
-  color: var(--cream) !important;
-  border: 2px solid var(--dark) !important;
-  border-radius: 0 !important;
-  
-  padding: 0.875rem 2rem !important;
-  
-  transition: all 0.4s ease;
-}
-
-.btn-dark:hover {
-  background: var(--bronze) !important;
-  border-color: var(--bronze) !important;
-  transform: translateY(-2px);
-}
-
-.btn-light-premium {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
-  
-  background: var(--white) !important;
-  color: var(--dark) !important;
-  border: 2px solid var(--white) !important;
-  border-radius: 0 !important;
-  
-  padding: 1.125rem 3rem !important;
-  
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.btn-light-premium:hover {
-  background: var(--gold) !important;
-  border-color: var(--gold) !important;
-  color: var(--dark) !important;
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(201, 168, 117, 0.4);
-}
-
-/* ============================================
-   SECTIONS
-   ============================================ */
-
-.services-section {
-  padding: 8rem 0;
-  background: var(--white);
-  position: relative;
-}
-
-.portfolio-section {
-  padding: 8rem 0;
-  background: var(--cream);
-  position: relative;
-}
-
-.about-section {
-  padding: 8rem 0;
-  background: var(--white);
-  position: relative;
-}
-
-/* Section Headers */
-.section-header {
-  text-align: center;
-  margin-bottom: 5rem;
-}
-
-.header-ornament {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.section-header .header-ornament {
-  justify-content: center;
-}
-
-.ornament-line {
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-
-.ornament-diamond {
-  width: 12px;
-  height: 12px;
-  background: var(--gold);
-  transform: rotate(45deg);
-}
-
-.ornament-diamond.light {
-  background: var(--white);
-}
-
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--dark);
-  margin-bottom: 1rem;
-}
-
-.section-subtitle {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.125rem;
-  color: var(--warm-gray);
-  letter-spacing: 0.02em;
-}
-
-/* ============================================
-   REDESIGNED SERVICE CARDS WITH IMAGES
-   ============================================ */
-
-.service-card-redesign {
-  background: var(--cream);
-  overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  position: relative;
-  border: 1px solid rgba(139, 115, 85, 0.15);
-}
-
-.service-card-redesign::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--bronze));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.service-card-redesign:hover {
-  transform: translateY(-12px);
-  box-shadow: 
-    0 24px 48px rgba(44, 36, 22, 0.12),
-    0 12px 24px rgba(139, 115, 85, 0.08);
-}
-
-.service-card-redesign:hover::after {
-  transform: scaleX(1);
-}
-
-/* Service Image Container */
-.service-image-container {
-  position: relative;
-  height: 280px;
-  overflow: hidden;
-  background: linear-gradient(135deg, 
-    rgba(201, 168, 117, 0.08) 0%,
-    rgba(139, 115, 85, 0.08) 100%
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.4) 100%
   );
 }
 
-.image-frame {
+.hero-content {
   position: absolute;
-  width: 50px;
-  height: 50px;
-  border: 2px solid var(--gold);
-  z-index: 2;
-  opacity: 0.6;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  z-index: 10;
 }
 
-.image-frame.frame-tl {
-  top: 15px;
-  left: 15px;
-  border-right: none;
-  border-bottom: none;
+.hero-content .container {
+  text-align: center;
 }
 
-.image-frame.frame-br {
-  bottom: 15px;
-  right: 15px;
-  border-left: none;
-  border-top: none;
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.service-card-redesign:hover .image-frame {
-  opacity: 1;
+.hero-motto {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 2.5rem 0;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.service-card-redesign:hover .image-frame.frame-tl {
-  top: 10px;
-  left: 10px;
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.service-card-redesign:hover .image-frame.frame-br {
-  bottom: 10px;
-  right: 10px;
+/* Slide Navigation */
+.slide-nav {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 20;
+}
+
+.nav-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.nav-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(1.2);
+}
+
+.nav-dot.active {
+  background: #ffffff;
+  border-color: #ffffff;
+  transform: scale(1.3);
+}
+
+/* Slide Controls */
+.slide-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 20;
+}
+
+.slide-control:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slide-control.prev {
+  left: 2rem;
+}
+
+.slide-control.next {
+  right: 2rem;
+}
+
+/* Slide Transitions */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 1s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.02em;
+}
+
+.section-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ============================================
+   SERVICES SECTION
+   ============================================ */
+
+.services-section {
+  padding: 5rem 0;
+  background: #ffffff;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.service-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: #c9a875;
+}
+
+.service-image-wrapper {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  background: #f9fafb;
 }
 
 .service-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.4s ease;
 }
 
-.service-card-redesign:hover .service-image {
-  transform: scale(1.1);
+.service-card:hover .service-image {
+  transform: scale(1.08);
 }
 
-.image-overlay {
+.service-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, 
-    transparent 0%,
-    rgba(44, 36, 22, 0.4) 100%
-  );
+  background: rgba(17, 24, 39, 0.7);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.service-card:hover .service-overlay {
+  opacity: 1;
+}
+
+.service-overlay i {
+  font-size: 3rem;
+  color: #ffffff;
+}
+
+.service-info {
+  padding: 1.75rem;
+}
+
+.service-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+}
+
+.service-description {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ============================================
+   GALLERY SECTION
+   ============================================ */
+
+.gallery-section {
+  padding: 5rem 0;
+  background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.gallery-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  border-color: #d1d5db;
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.gallery-item:hover .gallery-image {
+  transform: scale(1.05);
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.75) 0%, rgba(17, 24, 39, 0.6) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
 
-.service-card-redesign:hover .image-overlay {
+.gallery-item:hover .gallery-overlay {
   opacity: 1;
 }
 
-.overlay-icon {
-  font-size: 3rem;
-  color: var(--white);
-  transform: translateY(20px);
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+.gallery-overlay i {
+  font-size: 2.5rem;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  animation: pulse 2s infinite;
 }
 
-.service-card-redesign:hover .overlay-icon {
-  transform: translateY(0);
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
-/* Service Content */
-.service-content {
-  padding: 2.5rem 2rem;
-  background: var(--white);
-}
-
-.service-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--dark);
-  margin-bottom: 1rem;
-  letter-spacing: 0.02em;
-  transition: color 0.3s ease;
-}
-
-.service-card-redesign:hover .service-title {
-  color: var(--gold);
-}
-
-.service-description {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--warm-gray);
-  margin-bottom: 1.5rem;
-}
-
-.service-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.service-list li {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.875rem;
-  color: var(--warm-gray);
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  transition: color 0.3s ease;
-}
-
-.service-card-redesign:hover .service-list li {
-  color: var(--dark);
-}
-
-.list-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--gold);
-  border-radius: 50%;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.list-dot::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border: 1px solid var(--gold);
-  border-radius: 50%;
-  opacity: 0.3;
+.gallery-actions {
+  text-align: center;
 }
 
 /* ============================================
    ABOUT SECTION
    ============================================ */
 
-.about-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-  color: var(--dark);
+.about-section {
+  padding: 5rem 0;
+  background: #ffffff;
 }
 
-.about-visual {
-  position: relative;
-  height: 500px;
-}
-
-.visual-frame {
-  position: absolute;
-  inset: 2rem;
-  background: linear-gradient(135deg, 
-    rgba(201, 168, 117, 0.05) 0%,
-    rgba(139, 115, 85, 0.05) 100%
-  );
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  border: 1px solid var(--bronze);
-}
-
-.frame-border {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--gold);
-}
-
-.border-tl {
-  top: -3px;
-  left: -3px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.border-tr {
-  top: -3px;
-  right: -3px;
-  border-left: none;
-  border-bottom: none;
-}
-
-.border-bl {
-  bottom: -3px;
-  left: -3px;
-  border-right: none;
-  border-top: none;
-}
-
-.border-br {
-  bottom: -3px;
-  right: -3px;
-  border-left: none;
-  border-top: none;
-}
-
-.visual-content {
+.about-content {
+  max-width: 960px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.visual-content i {
-  font-size: 6rem;
-  color: var(--gold);
-  opacity: 0.6;
-  display: block;
-  margin-bottom: 1rem;
+.about-text {
+  margin-bottom: 3rem;
 }
 
-.visual-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
+.about-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--bronze);
-  line-height: 1.3;
+  color: #111827;
+  margin: 0 0 1.5rem 0;
 }
 
-.visual-accent {
-  position: absolute;
-  background: var(--gold);
-  opacity: 0.15;
-}
-
-.accent-1 {
-  width: 150px;
-  height: 2px;
-  top: 50%;
-  left: -80px;
-  transform: translateY(-50%);
-}
-
-.accent-2 {
-  width: 2px;
-  height: 150px;
-  top: -80px;
-  right: 50%;
-  transform: translateX(50%);
-}
-
-/* ============================================
-   CONTACT SECTION
-   ============================================ */
-
-.contact-section {
-  padding: 8rem 0;
-  background: linear-gradient(135deg, 
-    var(--dark) 0%,
-    #3D3123 50%,
-    var(--dark) 100%
-  );
-  position: relative;
-  overflow: hidden;
-}
-
-.contact-overlay {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 30% 50%, 
-    rgba(201, 168, 117, 0.1) 0%,
-    transparent 50%
-  );
-  pointer-events: none;
-}
-
-.contact-pattern {
-  position: absolute;
-  inset: 0;
-  background-image: 
-    repeating-linear-gradient(0deg, 
-      transparent, 
-      transparent 49px, 
-      rgba(201, 168, 117, 0.03) 49px, 
-      rgba(201, 168, 117, 0.03) 50px
-    );
-  pointer-events: none;
-}
-
-.contact-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3rem, 6vw, 4.5rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.05em;
-  color: var(--white);
-}
-
-.contact-subtitle {
-  font-family: 'Montserrat', sans-serif;
+.about-description {
+  font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 700px;
-  margin: 0 auto;
+  color: #4b5563;
+  margin: 0 0 2rem 0;
 }
 
-.contact-info-item {
+.about-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.about-stats {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  padding: 3rem 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.stat-item {
   text-align: center;
-  color: var(--white);
 }
 
-.contact-info-item i {
-  font-size: 1.5rem;
-  color: var(--gold);
-  display: block;
-}
-
-.info-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 600;
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
   margin-bottom: 0.5rem;
 }
 
-.info-value {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--white);
+.stat-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6b7280;
 }
 
 /* ============================================
-   ANIMATIONS
+   CTA SECTION
    ============================================ */
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.cta-section {
+  padding: 5rem 0;
+  background: #ffffff;
+  color: #111827;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.cta-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-@keyframes scaleIn {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+.cta-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 1rem 0;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
+.cta-description {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin: 0 0 2.5rem 0;
+  line-height: 1.6;
+}
+
+.cta-actions {
+  margin-bottom: 3rem;
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  padding-top: 2.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: #111827;
+}
+
+.info-item i {
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+/* ============================================
+   LIGHTBOX
+   ============================================ */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 2rem;
+  backdrop-filter: blur(8px);
+}
+
+.lightbox-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-nav.prev {
+  left: 2rem;
+}
+
+.lightbox-nav.next {
+  right: 2rem;
+}
+
+/* ============================================
+   MODERN BUTTON STYLES
+   ============================================ */
+
+.modern-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modern-btn-primary {
+  background: #111827;
+  color: #ffffff;
+  border: 1px solid #111827;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05) inset;
+}
+
+.modern-btn-primary:hover {
+  background: #1f2937;
+  border-color: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.05) inset;
+}
+
+.modern-btn-secondary {
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.modern-btn-secondary:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.modern-btn-outline {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.modern-btn-outline:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.modern-btn-large {
+  font-size: 0.9375rem;
+  padding: 0.875rem 1.75rem;
+}
+
+.modern-btn:hover i {
+  transform: translateX(2px);
 }
 
 /* ============================================
    RESPONSIVE
    ============================================ */
 
-@media (max-width: 1024px) {
-  .hero-ornament { display: none; }
-  
-  .stat-item {
-    flex: 1;
-    min-width: 80px;
+@media (max-width: 768px) {
+  .hero-section {
+    height: calc(100vh - 80px);
+    min-height: 500px;
   }
-  
-  .service-image-container {
-    height: 240px;
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-motto {
+    font-size: 1.125rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .slide-control {
+    width: 40px;
+    height: 40px;
+  }
+
+  .slide-control.prev {
+    left: 1rem;
+  }
+
+  .slide-control.next {
+    right: 1rem;
+  }
+
+  .services-section,
+  .gallery-section,
+  .about-section,
+  .cta-section {
+    padding: 4rem 0;
+  }
+
+  .section-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .about-stats {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .contact-info {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .lightbox-nav {
+    width: 48px;
+    height: 48px;
+  }
+
+  .lightbox-nav.prev {
+    left: 1rem;
+  }
+
+  .lightbox-nav.next {
+    right: 1rem;
   }
 }
 
-@media (max-width: 768px) {
-  .services-section,
-  .portfolio-section,
-  .about-section,
-  .contact-section {
-    padding: 5rem 0;
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
   }
-  
-  .section-header {
-    margin-bottom: 3rem;
+
+  .slide-nav {
+    bottom: 1rem;
   }
-  
-  .service-image-container {
-    height: 220px;
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
   }
-  
-  .service-content {
-    padding: 2rem 1.5rem;
-  }
-  
-  .about-visual {
-    height: 400px;
-  }
-  
-  .visual-content i {
-    font-size: 4rem;
-  }
-  
-  .visual-text {
-    font-size: 1.5rem;
+
+  .stat-number {
+    font-size: 2.5rem;
   }
 }
 </style>
