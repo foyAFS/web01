@@ -15,6 +15,8 @@
               :src="image" 
               :alt="`Showcase ${index + 1}`" 
               class="hero-image"
+              :loading="index === 0 ? 'eager' : 'lazy'"
+              decoding="async"
               @error="handleHeroImageError"
             />
             <div class="hero-overlay"></div>
@@ -75,7 +77,13 @@
             class="service-card"
           >
             <div class="service-image-wrapper">
-              <img :src="service.image" :alt="service.title" class="service-image" />
+              <img 
+                :src="service.image" 
+                :alt="service.title" 
+                class="service-image"
+                loading="lazy"
+                decoding="async"
+              />
               <div class="service-overlay">
                 <i :class="service.icon"></i>
               </div>
@@ -108,6 +116,8 @@
               :src="image" 
               :alt="`Project ${index + 1}`" 
               class="gallery-image"
+              loading="lazy"
+              decoding="async"
               @error="handleImageError"
             />
             <div class="gallery-overlay">
@@ -399,6 +409,8 @@ onUnmounted(() => {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .hero-overlay {
@@ -537,7 +549,7 @@ onUnmounted(() => {
 
 .section-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .section-title {
@@ -561,14 +573,14 @@ onUnmounted(() => {
    ============================================ */
 
 .services-section {
-  padding: 5rem 0;
+  padding: 4rem 0;
   background: #ffffff;
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .service-card {
@@ -576,8 +588,12 @@ onUnmounted(() => {
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .service-card:hover {
@@ -588,7 +604,7 @@ onUnmounted(() => {
 
 .service-image-wrapper {
   position: relative;
-  height: 260px;
+  height: 220px;
   overflow: hidden;
   background: #f9fafb;
 }
@@ -598,6 +614,8 @@ onUnmounted(() => {
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .service-card:hover .service-image {
@@ -625,7 +643,7 @@ onUnmounted(() => {
 }
 
 .service-info {
-  padding: 1.75rem;
+  padding: 1.5rem;
 }
 
 .service-title {
@@ -649,15 +667,15 @@ onUnmounted(() => {
    ============================================ */
 
 .gallery-section {
-  padding: 5rem 0;
+  padding: 4rem 0;
   background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
 }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
 }
 
 .gallery-item {
@@ -668,8 +686,12 @@ onUnmounted(() => {
   cursor: pointer;
   background: #f3f4f6;
   border: 1px solid #e5e7eb;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .gallery-item:hover {
@@ -688,6 +710,8 @@ onUnmounted(() => {
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .gallery-item:hover .gallery-image {
@@ -734,7 +758,7 @@ onUnmounted(() => {
    ============================================ */
 
 .about-section {
-  padding: 5rem 0;
+  padding: 4rem 0;
   background: #ffffff;
 }
 
@@ -804,7 +828,7 @@ onUnmounted(() => {
    ============================================ */
 
 .cta-section {
-  padding: 5rem 0;
+  padding: 4rem 0;
   background: #ffffff;
   color: #111827;
 }
@@ -1051,20 +1075,21 @@ onUnmounted(() => {
   .gallery-section,
   .about-section,
   .cta-section {
-    padding: 4rem 0;
+    padding: 3rem 0;
   }
 
   .section-header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .services-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
   }
 
   .about-stats {
