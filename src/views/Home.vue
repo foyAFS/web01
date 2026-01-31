@@ -1,9 +1,8 @@
 <template>
   <main class="modern-home">
-    <!-- Hero Section - Visual First -->
+    <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-slideshow">
-        <!-- Image Slides -->
         <transition-group name="slide-fade">
           <div 
             v-for="(image, index) in heroImages" 
@@ -15,15 +14,11 @@
               :src="image" 
               :alt="`Showcase ${index + 1}`" 
               class="hero-image"
-              :loading="index === 0 ? 'eager' : 'lazy'"
-              decoding="async"
-              @error="handleHeroImageError"
             />
             <div class="hero-overlay"></div>
           </div>
         </transition-group>
 
-        <!-- Hero Content -->
         <div class="hero-content">
           <div class="container">
             <h1 class="hero-title">Crafted Excellence</h1>
@@ -41,28 +36,25 @@
           </div>
         </div>
 
-        <!-- Slide Navigation -->
         <div class="slide-nav">
           <button 
             v-for="(_, index) in heroImages" 
             :key="index"
             @click="currentSlide = index"
             :class="['nav-dot', { active: currentSlide === index }]"
-            :aria-label="`Go to slide ${index + 1}`"
           ></button>
         </div>
 
-        <!-- Slide Controls -->
-        <button @click="prevSlide" class="slide-control prev" aria-label="Previous slide">
+        <button @click="prevSlide" class="slide-control prev">
           <i class="pi pi-chevron-left"></i>
         </button>
-        <button @click="nextSlide" class="slide-control next" aria-label="Next slide">
+        <button @click="nextSlide" class="slide-control next">
           <i class="pi pi-chevron-right"></i>
         </button>
       </div>
     </section>
 
-    <!-- Services Section - Visual Grid -->
+    <!-- Services Section -->
     <section class="services-section">
       <div class="container">
         <div class="section-header">
@@ -81,8 +73,6 @@
                 :src="service.image" 
                 :alt="service.title" 
                 class="service-image"
-                loading="lazy"
-                decoding="async"
               />
               <div class="service-overlay">
                 <i :class="service.icon"></i>
@@ -97,12 +87,12 @@
       </div>
     </section>
 
-    <!-- Portfolio Gallery - Dynamic Images -->
+    <!-- Portfolio Gallery -->
     <section class="gallery-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Our Portfolio</h2>
-          <p class="section-subtitle">Explore our completed projects showcasing quality craftsmanship</p>
+          <p class="section-subtitle">Explore our completed projects</p>
         </div>
 
         <div class="gallery-grid">
@@ -116,8 +106,6 @@
               :src="image" 
               :alt="`Project ${index + 1}`" 
               class="gallery-image"
-              loading="lazy"
-              decoding="async"
               @error="handleImageError"
             />
             <div class="gallery-overlay">
@@ -135,15 +123,14 @@
       </div>
     </section>
 
-    <!-- About Section - Minimal -->
+    <!-- About Section -->
     <section class="about-section">
       <div class="container">
         <div class="about-content">
           <div class="about-text">
             <h2 class="about-title">Fifteen Years of Excellence</h2>
             <p class="about-description">
-              We transform spaces through exceptional craftsmanship and innovative design. 
-              Every project reflects our commitment to quality and attention to detail.
+              We transform spaces through exceptional craftsmanship and innovative design.
             </p>
             <div class="about-actions">
               <router-link to="/about" class="modern-btn modern-btn-secondary">
@@ -170,12 +157,12 @@
       </div>
     </section>
 
-    <!-- Contact CTA Section -->
+    <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
         <div class="cta-content">
           <h2 class="cta-title">Ready to Start Your Project?</h2>
-          <p class="cta-description">Let's bring your vision to life with exceptional craftsmanship</p>
+          <p class="cta-description">Let's bring your vision to life</p>
           <div class="cta-actions">
             <router-link to="/contact" class="modern-btn modern-btn-primary modern-btn-large">
               <span>Get Free Consultation</span>
@@ -197,20 +184,27 @@
       </div>
     </section>
 
-    <!-- Lightbox Modal -->
+    <!-- Lightbox -->
     <Teleport to="body">
-      <div v-if="lightboxOpen" class="lightbox" @click="closeLightbox">
-        <button class="lightbox-close" @click="closeLightbox" aria-label="Close lightbox">
-          <i class="pi pi-times"></i>
-        </button>
-        <img :src="galleryImages[lightboxIndex]" :alt="`Project ${lightboxIndex + 1}`" class="lightbox-image" @click.stop />
-        <button @click.stop="prevImage" class="lightbox-nav prev" aria-label="Previous image">
-          <i class="pi pi-chevron-left"></i>
-        </button>
-        <button @click.stop="nextImage" class="lightbox-nav next" aria-label="Next image">
-          <i class="pi pi-chevron-right"></i>
-        </button>
-      </div>
+      <transition name="fade">
+        <div v-if="lightboxOpen" class="lightbox" @click="closeLightbox">
+          <button class="lightbox-close" @click="closeLightbox">
+            <i class="pi pi-times"></i>
+          </button>
+          <img 
+            :src="galleryImages[lightboxIndex]" 
+            :alt="`Project ${lightboxIndex + 1}`" 
+            class="lightbox-image" 
+            @click.stop 
+          />
+          <button @click.stop="prevImage" class="lightbox-nav prev">
+            <i class="pi pi-chevron-left"></i>
+          </button>
+          <button @click.stop="nextImage" class="lightbox-nav next">
+            <i class="pi pi-chevron-right"></i>
+          </button>
+        </div>
+      </transition>
     </Teleport>
   </main>
 </template>
@@ -218,18 +212,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
-// Hero Slideshow - Using working images only
 const heroImages = ref([
-  '/wp1.svg',
-  '/wp2.svg',
-  '/wp3.svg',
-  '/wp4.svg',
-  '/wp6.svg',
-  '/wp7.svg',
-  '/wp8.svg',
-  '/wp9.svg',
-  '/wp10.svg',
-  '/wp14.svg'  // Adding wp14 back to hero
+  '/wp1.svg', '/wp2.svg', '/wp3.svg', '/wp4.svg', '/wp6.svg',
+  '/wp7.svg', '/wp8.svg', '/wp9.svg', '/wp10.svg', '/wp14.svg'
 ]);
 
 const currentSlide = ref(0);
@@ -246,16 +231,9 @@ const prevSlide = () => {
 };
 
 const startSlideshow = () => {
-  slideInterval = setInterval(nextSlide, 7000); // 7 seconds per slide for better viewing
+  slideInterval = setInterval(nextSlide, 5000);
 };
 
-const stopSlideshow = () => {
-  if (slideInterval) {
-    clearInterval(slideInterval);
-  }
-};
-
-// Services
 const services = ref([
   {
     title: 'Custom Cabinetry',
@@ -277,19 +255,11 @@ const services = ref([
   }
 ]);
 
-// Gallery - Using all remaining working images (11 images)
-const galleryImages = ref([]);
+const galleryImages = ref([
+  '/wp11.svg', '/wp12.svg', '/wp13.svg', '/wp15.svg', '/wp16.svg',
+  '/wp17.svg', '/wp18.svg', '/wp19.svg', '/wp20.svg', '/wp21.svg'
+]);
 
-const loadGalleryImages = () => {
-  // Use wp11, wp12, wp13, wp15-wp21 (excluding wp5 and wp14 which are in hero)
-  const galleryImageNumbers = [11, 12, 13, 15, 16, 17, 18, 19, 20, 21];
-  
-  galleryImageNumbers.forEach(num => {
-    galleryImages.value.push(`/wp${num}.svg`);
-  });
-};
-
-// Lightbox
 const lightboxOpen = ref(false);
 const lightboxIndex = ref(0);
 
@@ -314,45 +284,27 @@ const prevImage = () => {
     : lightboxIndex.value - 1;
 };
 
-// Handle image loading errors
+const handleKeydown = (e) => {
+  if (!lightboxOpen.value) return;
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft') prevImage();
+  else if (e.key === 'ArrowRight') nextImage();
+};
+
 const handleImageError = (event) => {
-  console.warn('Failed to load gallery image:', event.target.src);
-  // Hide the parent gallery item if image fails
   const galleryItem = event.target.closest('.gallery-item');
   if (galleryItem) {
     galleryItem.style.display = 'none';
   }
 };
 
-// Handle hero image errors
-const handleHeroImageError = (event) => {
-  console.warn('Failed to load hero image:', event.target.src);
-  // Skip to next slide if hero image fails
-  nextSlide();
-};
-
-// Keyboard navigation for lightbox
-const handleKeydown = (e) => {
-  if (!lightboxOpen.value) return;
-  
-  if (e.key === 'Escape') {
-    closeLightbox();
-  } else if (e.key === 'ArrowLeft') {
-    prevImage();
-  } else if (e.key === 'ArrowRight') {
-    nextImage();
-  }
-};
-
-// Lifecycle
 onMounted(() => {
-  loadGalleryImages();
   startSlideshow();
   window.addEventListener('keydown', handleKeydown);
 });
 
 onUnmounted(() => {
-  stopSlideshow();
+  if (slideInterval) clearInterval(slideInterval);
   document.body.style.overflow = '';
   window.removeEventListener('keydown', handleKeydown);
 });
@@ -361,16 +313,8 @@ onUnmounted(() => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
-/* ============================================
-   BASE STYLES
-   ============================================ */
-
-* {
-  scroll-behavior: smooth;
-}
-
 .modern-home {
-  background: #ffffff;
+  background: #fff;
   min-height: 100vh;
 }
 
@@ -380,14 +324,11 @@ onUnmounted(() => {
   padding: 0 1.5rem;
 }
 
-/* ============================================
-   HERO SECTION - SLIDESHOW
-   ============================================ */
-
+/* Hero */
 .hero-section {
   position: relative;
   height: 100vh;
-  min-height: 700px;
+  min-height: 600px;
   overflow: hidden;
 }
 
@@ -400,28 +341,18 @@ onUnmounted(() => {
 .hero-slide {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
 }
 
 .hero-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
+  background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
 }
 
 .hero-content {
@@ -438,22 +369,19 @@ onUnmounted(() => {
 
 .hero-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(3rem, 6vw, 5rem);
+  font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 700;
-  color: #ffffff;
+  color: #fff;
   margin: 0 0 1rem 0;
-  letter-spacing: 0.02em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .hero-motto {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 2.5rem 0;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: rgba(255,255,255,0.9);
+  margin: 0 0 2rem 0;
   letter-spacing: 0.05em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .hero-actions {
@@ -463,7 +391,6 @@ onUnmounted(() => {
   flex-wrap: wrap;
 }
 
-/* Slide Navigation */
 .slide-nav {
   position: absolute;
   bottom: 2rem;
@@ -475,78 +402,55 @@ onUnmounted(() => {
 }
 
 .nav-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255,255,255,0.4);
+  border: 2px solid rgba(255,255,255,0.6);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   padding: 0;
 }
 
-.nav-dot:hover {
-  background: rgba(255, 255, 255, 0.6);
-  transform: scale(1.2);
-}
-
 .nav-dot.active {
-  background: #ffffff;
-  border-color: #ffffff;
+  background: #fff;
   transform: scale(1.3);
 }
 
-/* Slide Controls */
 .slide-control {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   z-index: 20;
 }
 
 .slide-control:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-50%) scale(1.1);
+  background: rgba(255,255,255,0.25);
 }
 
-.slide-control.prev {
-  left: 2rem;
+.slide-control.prev { left: 1.5rem; }
+.slide-control.next { right: 1.5rem; }
+
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: opacity 0.6s;
 }
 
-.slide-control.next {
-  right: 2rem;
-}
-
-/* Slide Transitions */
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: opacity 1s ease;
-}
-
-.slide-fade-enter-from {
+.slide-fade-enter-from, .slide-fade-leave-to {
   opacity: 0;
 }
 
-.slide-fade-leave-to {
-  opacity: 0;
-}
-
-/* ============================================
-   SECTION HEADERS
-   ============================================ */
-
+/* Sections */
 .section-header {
   text-align: center;
   margin-bottom: 2.5rem;
@@ -554,57 +458,45 @@ onUnmounted(() => {
 
 .section-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 700;
   color: #111827;
   margin: 0 0 0.75rem 0;
-  letter-spacing: 0.02em;
 }
 
 .section-subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: #6b7280;
-  margin: 0;
 }
 
-/* ============================================
-   SERVICES SECTION
-   ============================================ */
-
+/* Services */
 .services-section {
-  padding: 4rem 0;
-  background: #ffffff;
+  padding: 3.5rem 0;
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 }
 
 .service-card {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border-color: #c9a875;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
 }
 
 .service-image-wrapper {
   position: relative;
-  height: 220px;
+  height: 200px;
   overflow: hidden;
   background: #f9fafb;
 }
@@ -613,9 +505,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
+  transition: transform 0.4s;
 }
 
 .service-card:hover .service-image {
@@ -625,12 +515,12 @@ onUnmounted(() => {
 .service-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(17, 24, 39, 0.7);
+  background: rgba(17,24,39,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s;
 }
 
 .service-card:hover .service-overlay {
@@ -638,8 +528,8 @@ onUnmounted(() => {
 }
 
 .service-overlay i {
-  font-size: 3rem;
-  color: #ffffff;
+  font-size: 2.5rem;
+  color: #fff;
 }
 
 .service-info {
@@ -648,70 +538,51 @@ onUnmounted(() => {
 
 .service-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 700;
-  color: #111827;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .service-description {
-  font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
   color: #6b7280;
   margin: 0;
-  line-height: 1.6;
 }
 
-/* ============================================
-   GALLERY SECTION
-   ============================================ */
-
+/* Gallery */
 .gallery-section {
-  padding: 4rem 0;
-  background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
+  padding: 3.5rem 0;
+  background: linear-gradient(to bottom, #f9fafb, #fff);
 }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 2.5rem;
 }
 
 .gallery-item {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 4/3;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   background: #f3f4f6;
   border: 1px solid #e5e7eb;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
+  transition: all 0.3s;
 }
 
 .gallery-item:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-  border-color: #d1d5db;
-}
-
-.gallery-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .gallery-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
+  transition: transform 0.4s;
 }
 
 .gallery-item:hover .gallery-image {
@@ -721,12 +592,12 @@ onUnmounted(() => {
 .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(17, 24, 39, 0.75) 0%, rgba(17, 24, 39, 0.6) 100%);
+  background: rgba(17,24,39,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s;
 }
 
 .gallery-item:hover .gallery-overlay {
@@ -734,36 +605,21 @@ onUnmounted(() => {
 }
 
 .gallery-overlay i {
-  font-size: 2.5rem;
-  color: #ffffff;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
+  font-size: 2rem;
+  color: #fff;
 }
 
 .gallery-actions {
   text-align: center;
 }
 
-/* ============================================
-   ABOUT SECTION
-   ============================================ */
-
+/* About */
 .about-section {
-  padding: 4rem 0;
-  background: #ffffff;
+  padding: 3.5rem 0;
 }
 
 .about-content {
-  max-width: 960px;
+  max-width: 900px;
   margin: 0 auto;
   text-align: center;
 }
@@ -774,16 +630,14 @@ onUnmounted(() => {
 
 .about-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 700;
-  color: #111827;
   margin: 0 0 1.5rem 0;
 }
 
 .about-description {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.125rem;
-  line-height: 1.8;
+  font-size: 1.0625rem;
+  line-height: 1.7;
   color: #4b5563;
   margin: 0 0 2rem 0;
 }
@@ -796,41 +650,29 @@ onUnmounted(() => {
 .about-stats {
   display: flex;
   justify-content: center;
-  gap: 4rem;
-  padding: 3rem 0;
+  gap: 3.5rem;
+  padding: 2.5rem 0;
   border-top: 1px solid #e5e7eb;
-}
-
-.stat-item {
-  text-align: center;
 }
 
 .stat-number {
   font-family: 'Playfair Display', serif;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #111827;
-  line-height: 1;
   margin-bottom: 0.5rem;
 }
 
 .stat-label {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #6b7280;
 }
 
-/* ============================================
-   CTA SECTION
-   ============================================ */
-
+/* CTA */
 .cta-section {
-  padding: 4rem 0;
-  background: #ffffff;
-  color: #111827;
+  padding: 3.5rem 0;
 }
 
 .cta-content {
@@ -841,30 +683,27 @@ onUnmounted(() => {
 
 .cta-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 700;
-  color: #111827;
   margin: 0 0 1rem 0;
 }
 
 .cta-description {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   color: #4b5563;
-  margin: 0 0 2.5rem 0;
-  line-height: 1.6;
+  margin: 0 0 2rem 0;
 }
 
 .cta-actions {
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .contact-info {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 2.5rem;
   flex-wrap: wrap;
-  padding-top: 2.5rem;
+  padding-top: 2rem;
   border-top: 1px solid #e5e7eb;
 }
 
@@ -872,158 +711,133 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-family: 'Inter', sans-serif;
   font-size: 0.9375rem;
-  color: #111827;
 }
 
 .info-item i {
-  font-size: 1.125rem;
   color: #6b7280;
 }
 
-/* ============================================
-   LIGHTBOX
-   ============================================ */
-
+/* Lightbox */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.97);
+  background: rgba(0,0,0,0.95);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
   padding: 2rem;
-  backdrop-filter: blur(8px);
 }
 
 .lightbox-image {
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
 }
 
 .lightbox-close {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
 .lightbox-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+  background: rgba(255,255,255,0.2);
 }
 
 .lightbox-nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 50%;
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
 .lightbox-nav:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-50%) scale(1.1);
+  background: rgba(255,255,255,0.2);
 }
 
-.lightbox-nav.prev {
-  left: 2rem;
+.lightbox-nav.prev { left: 1.5rem; }
+.lightbox-nav.next { right: 1.5rem; }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
 }
 
-.lightbox-nav.next {
-  right: 2rem;
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 
-/* ============================================
-   MODERN BUTTON STYLES
-   ============================================ */
-
+/* Buttons */
 .modern-btn {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border: none;
-  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .modern-btn-primary {
   background: #111827;
-  color: #ffffff;
-  border: 1px solid #111827;
-  box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.05) inset;
+  color: #fff;
+  border-color: #111827;
 }
 
 .modern-btn-primary:hover {
   background: #1f2937;
-  border-color: #1f2937;
-  transform: translateY(-1px);
-  box-shadow: 
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(0, 0, 0, 0.05) inset;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
 }
 
 .modern-btn-secondary {
   background: #f3f4f6;
   color: #111827;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-color: #e5e7eb;
 }
 
 .modern-btn-secondary:hover {
   background: #e5e7eb;
-  border-color: #d1d5db;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .modern-btn-outline {
-  background: #ffffff;
+  background: #fff;
   color: #111827;
-  border: 1px solid #d1d5db;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-color: #d1d5db;
 }
 
 .modern-btn-outline:hover {
   background: #f9fafb;
   border-color: #9ca3af;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .modern-btn-large {
@@ -1032,64 +846,28 @@ onUnmounted(() => {
 }
 
 .modern-btn:hover i {
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
+/* Responsive */
 @media (max-width: 768px) {
   .hero-section {
-    height: calc(100vh - 80px);
     min-height: 500px;
-  }
-
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .hero-motto {
-    font-size: 1.125rem;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .slide-control {
-    width: 40px;
-    height: 40px;
-  }
-
-  .slide-control.prev {
-    left: 1rem;
-  }
-
-  .slide-control.next {
-    right: 1rem;
   }
 
   .services-section,
   .gallery-section,
   .about-section,
   .cta-section {
-    padding: 3rem 0;
-  }
-
-  .section-header {
-    margin-bottom: 2rem;
+    padding: 2.5rem 0;
   }
 
   .services-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
   }
 
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .about-stats {
@@ -1099,39 +877,7 @@ onUnmounted(() => {
 
   .contact-info {
     flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .lightbox-nav {
-    width: 48px;
-    height: 48px;
-  }
-
-  .lightbox-nav.prev {
-    left: 1rem;
-  }
-
-  .lightbox-nav.next {
-    right: 1rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .container {
-    padding: 0 1rem;
-  }
-
-  .slide-nav {
-    bottom: 1rem;
-  }
-
-  .nav-dot {
-    width: 10px;
-    height: 10px;
-  }
-
-  .stat-number {
-    font-size: 2.5rem;
+    gap: 1.25rem;
   }
 }
 </style>
